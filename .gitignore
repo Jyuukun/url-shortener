@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Python tools
+.pytest_cache/
+.ruff_cache/
+
+# Node.js
+node_modules/
+
+# Build outputs
+frontend/dist/
+
+# Environment & Secrets
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+
+# AI files
+CLAUDE.md
+AGENTS.md
+DEVBOOK.md
