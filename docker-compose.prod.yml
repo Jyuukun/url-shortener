@@ -1,0 +1,90 @@
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    restart: unless-stopped
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+      - "${CADDY_HTTPS_PORT:-443}:443"
+    environment:
+      CADDY_INGRESS_NETWORKS: url-shortener
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - caddy_data:/data
+    networks:
+      - internal
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-urlshortener}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-urlshortener}
+      BASE_URL: https://${DOMAIN}
+      ENVIRONMENT: production
+      CORS_ORIGINS: '["https://${DOMAIN}"]'
+      RATE_LIMIT_ENABLED: "true"
+    labels:
+      # API routes
+      caddy_0: ${CADDY_SCHEME:-https}://${DOMAIN}
+      caddy_0.handle: /api/*
+      caddy_0.handle.reverse_proxy: "{{upstreams 8000}}"
+      # Short codes (1-40 chars)
+      caddy_1: ${CADDY_SCHEME:-https}://${DOMAIN}
+      caddy_1.@shortcode.path_regexp: "^/[a-zA-Z0-9_-]{1,40}$"
+      caddy_1.handle: "@shortcode"
+      caddy_1.handle.reverse_proxy: "{{upstreams 8000}}"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    labels:
+      caddy: ${CADDY_SCHEME:-https}://${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+    depends_on:
+      - backend
+    networks:
+      - internal
+
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-urlshortener}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-urlshortener}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-urlshortener}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  migrate:
+    build: ./backend
+    command: uv run alembic upgrade head
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-urlshortener}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-urlshortener}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: "no"
+    profiles:
+      - migrate
+
+volumes:
+  postgres_data:
+  caddy_data:
+
+networks:
+  internal:
+    name: url-shortener
+    driver: bridge

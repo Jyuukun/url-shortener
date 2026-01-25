@@ -63,13 +63,31 @@ cd frontend && npm test
 ## Project Structure
 
 ```
-├── backend/          # FastAPI + PostgreSQL
-│   ├── app/          # API, models, services
-│   └── tests/        # pytest tests
-├── frontend/         # React 19 + TypeScript + Vite
-│   └── src/          # Components, actions, services
-└── docker-compose.yml
+├── backend/           # FastAPI + PostgreSQL
+│   ├── app/           # API, models, services
+│   └── tests/         # pytest tests
+├── frontend/          # React 19 + TypeScript + Vite
+│   └── src/           # Components, actions, services
+├── deploy/            # Production deployment scripts
+├── docker-compose.yml # Development (DB only)
+└── docker-compose.prod.yml # Production (all services)
 ```
+
+---
+
+## Production Deployment
+
+```bash
+# On your server
+git clone <repo> /opt/url-shortener && cd /opt/url-shortener
+
+cp .env.prod.example .env
+nano .env  # Set DOMAIN, POSTGRES_PASSWORD
+
+./deploy/docker-deploy.sh
+```
+
+See [deploy/README.md](deploy/README.md) for details.
 
 ---
 
@@ -83,4 +101,3 @@ cd frontend && npm test
 | **Base62 codes** | 56 billion combinations with 6 characters (a-z, A-Z, 0-9) |
 | **307 redirects** | Preserves HTTP method, respects `Cache-Control` headers (vs 301 cached indefinitely) |
 | **Emotion CSS** | Scoped styles, no class conflicts, colocation with components |
-
