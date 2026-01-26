@@ -46,3 +46,16 @@ export const footerStyles = css`
   color: #64748b;
   font-size: 14px;
 `
+
+export const githubLinkStyles = css`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #94a3b8;
+  }
+`

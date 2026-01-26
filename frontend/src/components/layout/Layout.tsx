@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { ReactNode } from 'react'
 import {
   cardStyles,
   containerStyles,
   footerStyles,
+  githubLinkStyles,
   headerStyles,
   layoutStyles,
   subtitleStyles,
@@ -27,7 +30,18 @@ export function Layout({ children }: LayoutProps) {
 
         <main css={cardStyles}>{children}</main>
 
-        <footer css={footerStyles}>Built with React 19 + FastAPI</footer>
+        <footer css={footerStyles}>
+          Built with React + FastAPI <br />
+          <a
+            href="https://github.com/Jyuukun/url-shortener"
+            target="_blank"
+            rel="noopener noreferrer"
+            css={githubLinkStyles}
+          >
+            <FontAwesomeIcon icon={faGithub} />
+            Check on GitHub
+          </a>
+        </footer>
       </div>
     </div>
   )
