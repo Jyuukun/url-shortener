@@ -85,22 +85,22 @@ class TestURLValidator:
     def test_validate_url_safety_blocks_javascript_scheme(self):
         with pytest.raises(URLValidationError) as exc:
             validate_url_safety("javascript:alert(1)")
-        assert "scheme" in str(exc.value).lower()
+        assert "invalid" in str(exc.value).lower()
 
     def test_validate_url_safety_blocks_data_scheme(self):
         with pytest.raises(URLValidationError) as exc:
             validate_url_safety("data:text/html,<script>alert(1)</script>")
-        assert "scheme" in str(exc.value).lower()
+        assert "invalid" in str(exc.value).lower()
 
     def test_validate_url_safety_blocks_file_scheme(self):
         with pytest.raises(URLValidationError) as exc:
             validate_url_safety("file:///etc/passwd")
-        assert "scheme" in str(exc.value).lower()
+        assert "invalid" in str(exc.value).lower()
 
     def test_validate_url_safety_requires_hostname(self):
         with pytest.raises(URLValidationError) as exc:
             validate_url_safety("https:///path/only")
-        assert "hostname" in str(exc.value).lower()
+        assert "invalid" in str(exc.value).lower()
 
     def test_validate_url_safety_blocks_ftp_scheme(self):
         with pytest.raises(URLValidationError) as exc:

@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-BLOCKED_SCHEMES = frozenset({"javascript", "data", "vbscript", "file"})
+import validators
 
 SUSPICIOUS_PATTERNS = frozenset(
     {
@@ -20,17 +20,11 @@ class URLValidationError(Exception):
 
 def validate_url_safety(url: str, own_domain: str | None = None) -> None:
     """Validate URL for safety against open redirect and phishing attacks."""
-    try:
-        parsed = urlparse(url)
-    except Exception as e:
-        raise URLValidationError("Invalid URL format") from e
+    if not validators.url(url, simple_host=True):
+        raise URLValidationError("Invalid URL format")
 
+    parsed = urlparse(url)
     scheme = (parsed.scheme or "").lower()
-    if scheme in BLOCKED_SCHEMES:
-        raise URLValidationError(f"URL scheme '{scheme}' is not allowed")
-
-    if not parsed.netloc:
-        raise URLValidationError("URL must have a valid hostname")
 
     if scheme not in ("http", "https"):
         raise URLValidationError(f"Only http and https URLs are allowed, got '{scheme}'")

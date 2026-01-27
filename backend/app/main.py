@@ -3,6 +3,15 @@ from typing import cast
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+from secure import (
+    ContentSecurityPolicy,
+    PermissionsPolicy,
+    ReferrerPolicy,
+    Secure,
+    StrictTransportSecurity,
+    XContentTypeOptions,
+    XFrameOptions,
+)
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from starlette.types import ExceptionHandler
@@ -28,21 +37,26 @@ app.add_middleware(
     allow_headers=["Content-Type", "Accept"],
 )
 
+secure_headers = Secure(
+    csp=ContentSecurityPolicy()
+    .default_src("'self'")
+    .script_src("'self'")
+    .style_src("'self'", "'unsafe-inline'")
+    .img_src("'self'", "data:")
+    .connect_src("'self'"),
+    permissions=PermissionsPolicy().geolocation().microphone().camera(),
+    referrer=ReferrerPolicy().strict_origin_when_cross_origin(),
+    xfo=XFrameOptions().deny(),
+    xcto=XContentTypeOptions(),
+    hsts=StrictTransportSecurity() if settings.environment == "production" else None,
+)
+
 
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next) -> Response:
     response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
+    secure_headers.set_headers(response)
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; connect-src 'self'"
-    )
-    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
-    if settings.environment == "production":
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 

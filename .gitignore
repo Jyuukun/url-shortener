@@ -6,6 +6,7 @@ __pycache__/
 # Python tools
 .pytest_cache/
 .ruff_cache/
+.coverage
 
 # Node.js
 node_modules/

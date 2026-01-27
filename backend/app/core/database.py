@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, create_engine
 
 from app.core.config import settings
 
@@ -18,10 +18,6 @@ def get_engine():
         pool_recycle=3600,
         pool_pre_ping=True,
     )
-
-
-def init_db() -> None:
-    SQLModel.metadata.create_all(get_engine())
 
 
 def get_session():
