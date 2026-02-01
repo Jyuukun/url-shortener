@@ -3,21 +3,21 @@ import { useFormStatus } from 'react-dom'
 import { buttonStyles } from './SubmitButton.styled'
 
 interface SubmitButtonProps {
-  label?: string
-  pendingLabel?: string
-  disabled?: boolean
+    label?: string
+    pendingLabel?: string
+    disabled?: boolean
 }
 
 export function SubmitButton({
-  label = 'Submit',
-  pendingLabel = 'Submitting...',
-  disabled = false,
+    label = 'Submit',
+    pendingLabel = 'Submitting...',
+    disabled = false,
 }: SubmitButtonProps) {
-  const { pending } = useFormStatus()
+    const { pending } = useFormStatus()
 
-  return (
-    <button type="submit" disabled={pending || disabled} css={buttonStyles}>
-      {pending ? pendingLabel : label}
-    </button>
-  )
+    return (
+        <button type="submit" disabled={pending || disabled} css={buttonStyles}>
+            {pending ? pendingLabel : label}
+        </button>
+    )
 }
