@@ -20,6 +20,7 @@ A URL shortener service that turns long links into shorter ones with working red
 | Node.js | 18+ |
 | Python | 3.12+ |
 | [uv](https://docs.astral.sh/uv/) | 0.5+ |
+| [pnpm](https://pnpm.io/) | 10+ |
 
 ### Setup
 
@@ -39,8 +40,8 @@ uv run uvicorn app.main:app --reload
 
 # 4. Start frontend (new terminal)
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 **URLs:**
@@ -55,7 +56,7 @@ npm run dev
 cd backend && uv run pytest -v
 
 # Frontend
-cd frontend && npm test
+cd frontend && pnpm test
 ```
 
 ---
