@@ -147,8 +147,8 @@ describe('shortenUrl', () => {
                             {
                                 type: 'string_too_long',
                                 loc: ['body', 'custom_alias'],
-                                msg: 'String should have at most 20 characters',
-                                input: 'a'.repeat(21),
+                                msg: 'String should have at most 40 characters',
+                                input: 'a'.repeat(41),
                             },
                         ],
                     }),
@@ -156,12 +156,12 @@ describe('shortenUrl', () => {
 
             const result = await shortenUrl({
                 url: 'https://example.com',
-                custom_alias: 'a'.repeat(21),
+                custom_alias: 'a'.repeat(41),
             })
 
             expect(result).toEqual({
                 success: false,
-                error: 'Custom alias must be at most 20 characters',
+                error: 'Custom alias must be at most 40 characters',
             })
         })
 

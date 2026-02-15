@@ -120,7 +120,7 @@ describe('ShortenForm', () => {
 
             await user.click(screen.getByRole('switch'))
 
-            expect(screen.getByText(/3-20 characters/i)).toBeInTheDocument()
+            expect(screen.getByText(/3-40 characters/i)).toBeInTheDocument()
         })
 
         it('toggle responds to Enter key', async () => {
@@ -212,7 +212,7 @@ describe('ShortenForm', () => {
             const aliasInput = screen.getByPlaceholderText(/my-custom-link/i)
 
             expect(aliasInput).toHaveAttribute('minLength', '3')
-            expect(aliasInput).toHaveAttribute('maxLength', '20')
+            expect(aliasInput).toHaveAttribute('maxLength', '40')
         })
     })
 
