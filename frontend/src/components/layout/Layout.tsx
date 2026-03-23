@@ -2,6 +2,7 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { ReactNode } from 'react'
+import logoTransparent from '../../assets/logo-transparent.png'
 import {
     cardStyles,
     containerStyles,
@@ -9,8 +10,8 @@ import {
     githubLinkStyles,
     headerStyles,
     layoutStyles,
+    logoStyles,
     subtitleStyles,
-    titleStyles,
 } from './Layout.styled'
 
 interface LayoutProps {
@@ -24,7 +25,7 @@ export function Layout({ children }: LayoutProps) {
             <meta name="description" content="Transform long URLs into short, shareable links" />
             <div css={containerStyles}>
                 <header css={headerStyles}>
-                    <h1 css={titleStyles}>URL Shortener</h1>
+                    <img src={logoTransparent} alt="s.elambert.me" css={logoStyles} />
                     <p css={subtitleStyles}>Transform long URLs into short, shareable links</p>
                 </header>
 

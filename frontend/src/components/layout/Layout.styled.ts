@@ -19,11 +19,11 @@ export const headerStyles = css`
   margin-bottom: 48px;
 `
 
-export const titleStyles = css`
-  font-size: 32px;
-  font-weight: 700;
-  color: #f1f5f9;
-  margin: 0 0 8px 0;
+export const logoStyles = css`
+  max-width: 320px;
+  height: auto;
+  margin-bottom: 8px;
+  padding: 16px 24px;
 `
 
 export const subtitleStyles = css`
