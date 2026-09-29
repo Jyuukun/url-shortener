@@ -60,7 +60,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-urlshortener}"]
-      interval: 5s
+      # Checked fast while starting, then every 30s: frequent checks make the
+      # containerd shim burn CPU after months of uptime
+      interval: 30s
+      start_period: 30s
+      start_interval: 2s
       timeout: 5s
       retries: 5
     networks:
