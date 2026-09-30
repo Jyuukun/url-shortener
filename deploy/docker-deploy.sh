@@ -35,16 +35,17 @@ if grep -q "CHANGE_THIS" .env; then
 fi
 
 echo -e "\n📦 Building images..."
-docker compose -f docker-compose.prod.yml build
+docker compose -f docker-compose.prod.yml build backend frontend
 
 echo -e "\n🗄️  Running migrations..."
 docker compose -f docker-compose.prod.yml run --rm migrate
 
-echo -e "\n🚀 Starting services..."
-docker compose -f docker-compose.prod.yml up -d
-
-echo -e "\n⏳ Waiting for services..."
-sleep 5
+echo -e "\n🚀 Starting services and waiting for healthchecks..."
+if ! docker compose -f docker-compose.prod.yml up -d --wait --wait-timeout 180; then
+    echo "❌ Services did not become healthy"
+    echo "  Check logs: docker compose -f docker-compose.prod.yml logs backend frontend"
+    exit 1
+fi
 
 echo -e "\n✅ Docker services running!"
 docker compose -f docker-compose.prod.yml ps

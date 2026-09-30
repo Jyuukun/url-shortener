@@ -15,6 +15,7 @@ services:
 
   backend:
     build: ./backend
+    image: url-shortener-backend
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-urlshortener}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-urlshortener}
@@ -71,8 +72,9 @@ services:
       - internal
 
   migrate:
-    build: ./backend
-    command: uv run alembic upgrade head
+    # Reuses the backend image instead of building a second copy
+    image: url-shortener-backend
+    command: ["alembic", "upgrade", "head"]
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-urlshortener}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-urlshortener}
     depends_on:
